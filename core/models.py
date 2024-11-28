@@ -35,6 +35,7 @@ class UserType(models.TextChoices):
     """Enumerated user type choices"""
     JOB_FINDER = 'JF', 'Job Finder'
     JOB_POSTER = 'JP', 'Job Poster'
+    Admin = 'Ad', 'Admin'
 
 
 class GenderChoices(models.TextChoices):
@@ -59,7 +60,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
     bio = models.TextField()
     prfile_pic_url = models.URLField(max_length=200, default='https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png')
-    resume_url = models.URLField(max_length=200)
+    resume_url = models.URLField(max_length=200, null=True, blank=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     created_at = models.DateField(auto_now_add=True)
