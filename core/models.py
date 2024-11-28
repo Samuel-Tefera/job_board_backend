@@ -37,19 +37,34 @@ class UserType(models.TextChoices):
     JOB_POSTER = 'JP', 'Job Poster'
 
 
+class GenderChoices(models.TextChoices):
+    """Enumerated user gender choices"""
+    MALE = 'M', 'Male'
+    Female = 'F', 'Female'
+
+
 class User(AbstractBaseUser, PermissionsMixin):
     """User Model"""
     first_name = models.CharField(max_length=34)
     last_name = models.CharField(max_length=34)
     email = models.EmailField(unique=True)
+    gender = models.CharField(
+        max_length=1,
+        choices=GenderChoices.choices
+    )
     user_type = models.CharField(
         max_length=2,
         choices=UserType.choices,
         default=UserType.JOB_FINDER
     )
     bio = models.TextField()
-    prfile_pic_url = models.URLField(max_length=200)
+    prfile_pic_url = models.URLField(max_length=200, default='https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png')
     resume_url = models.URLField(max_length=200)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     created_at = models.DateField(auto_now_add=True)
+
+    objects = UserManager()
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'bio', 'gender']
