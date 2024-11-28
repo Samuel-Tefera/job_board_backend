@@ -31,7 +31,7 @@ class UserManager(BaseUserManager):
         return user
 
 
-class UserType(models.Model):
+class UserType(models.TextChoices):
     """Enumerated user type choices"""
     JOB_FINDER = 'JF', 'Job Finder'
     JOB_POSTER = 'JP', 'Job Poster'
