@@ -8,6 +8,12 @@ from django.contrib.auth.models import(
 )
 
 
+class JobCategory(models.Model):
+    """Model for Job Categories"""
+    category_name = models.CharField(max_length=200)
+    created_at = models.DateField(auto_now_add=True)
+
+
 class UserManager(BaseUserManager):
     """User models manager."""
     def create_user(self, email, password=None, **extra_fields):
@@ -64,6 +70,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     created_at = models.DateField(auto_now_add=True)
+    job_category = models.ForeignKey(JobCategory, on_delete=models.SET_NULL, null=True)
 
     objects = UserManager()
 
