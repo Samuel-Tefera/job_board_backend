@@ -13,6 +13,9 @@ class JobCategory(models.Model):
     category_name = models.CharField(max_length=200)
     created_at = models.DateField(auto_now_add=True)
 
+    def __str__(self):
+        return self.category_name
+
 
 class UserManager(BaseUserManager):
     """User models manager."""
