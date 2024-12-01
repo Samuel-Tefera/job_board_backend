@@ -12,5 +12,9 @@ class UserAdmin(admin.ModelAdmin):
     list_filter = ['user_type', 'gender']
 
 
+class JobCategoryAdmin(admin.ModelAdmin):
+    list_display = ['category_name', 'created_at']
+
+
 admin.site.register(User, UserAdmin)
-admin.site.register(JobCategory)
+admin.site.register(JobCategory, JobCategoryAdmin)
