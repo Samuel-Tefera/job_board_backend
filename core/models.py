@@ -79,3 +79,34 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name', 'bio', 'gender']
+
+
+class JobType(models.TextChoices):
+    FULL_TIME = 'FT', 'Full time'
+    PART_TIME = 'PT', 'Part time'
+    CONTRACT = 'CT', 'Contract'
+
+
+class JobStatus(models.TextChoices):
+    OPEN = 'OP', 'Open'
+    CLOSED = 'CL', 'Closed'
+
+
+class Job(models.Model):
+    title = models.CharField(max_length=299)
+    description = models.TextField()
+    job_category = models.ForeignKey(JobCategory, on_delete=models.CASCADE)
+    type = models.CharField(
+        max_length=2,
+        choices=JobType.choices
+    )
+    location = models.CharField(max_length=399)
+    salary_range = models.CharField(max_length=50, default='Negotiable')
+    status = models.CharField(
+        max_length=2,
+        choices=JobStatus.choices,
+        default=JobStatus.OPEN
+    )
+    created_at = models.DateField(auto_now_add=True)
+    update_at = models.DateField(null=True)
+    poster_id = models.ForeignKey(User, on_delete=models.CASCADE)
