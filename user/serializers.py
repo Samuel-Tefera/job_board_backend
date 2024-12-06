@@ -11,7 +11,7 @@ class UserSerializers(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
         fields = [
-            'first_name', 'last_name', 'email', 'gender',
+            'id', 'first_name', 'last_name', 'email', 'gender',
             'user_type', 'bio', 'profile_pic_url', 'resume_url',
             'job_category', 'password'
         ]
@@ -54,4 +54,4 @@ class AuthTokenSerializer(serializers.Serializer):
             raise serializers.ValidationError(msg, code='authorization')
 
         attrs['user'] = user
-        return user
+        return attrs
