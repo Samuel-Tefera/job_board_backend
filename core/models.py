@@ -93,6 +93,7 @@ class JobStatus(models.TextChoices):
 
 
 class Job(models.Model):
+    """Job model"""
     title = models.CharField(max_length=299)
     description = models.TextField()
     job_category = models.ForeignKey(JobCategory, on_delete=models.CASCADE)
@@ -110,3 +111,31 @@ class Job(models.Model):
     created_at = models.DateField(auto_now_add=True)
     update_at = models.DateField(null=True)
     poster_id = models.ForeignKey(User, on_delete=models.CASCADE)
+
+
+class ApplicationStatus(models.TextChoices):
+    pending = 'pnd', 'Pending'
+    accepted = 'acp', 'Accepted'
+    rejected = 'rej', 'Rejected'
+
+
+class Application(models.Model):
+    """Model to record job applications"""
+    job = models.ForeignKey(Job, on_delete=models.CASCADE)
+    applicant = models.ForeignKey(User, on_delete=models.CASCADE)
+    status = models.CharField(
+        choices=ApplicationStatus.choices,
+        default=ApplicationStatus.pending,
+        max_length=3
+    )
+    created_at = models.DateField(auto_now_add=True)
+    updated_at = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Application by {self.applicant} for {self.job}'
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['job', 'applicant'], name='unique_application_per_job')
+        ]
+        

@@ -15,7 +15,7 @@ class UserAdmin(admin.ModelAdmin):
 
 
 class JobCategoryAdmin(admin.ModelAdmin):
-    list_display = ['category_name', 'created_at']
+    list_display = ['id', 'category_name']
 
 
 class JobAdmin(admin.ModelAdmin):
