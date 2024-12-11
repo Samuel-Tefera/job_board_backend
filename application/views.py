@@ -26,7 +26,7 @@ class ApplicationDetailView(generics.RetrieveAPIView):
     authentication_classes = [authentication.TokenAuthentication]
 
 
-class JobApplicationListView(generics.ListAPIView):
+class JobApplicationsListView(generics.ListAPIView):
     """API view for job applications list"""
     serializer_class = ApplicationSerializers
     permission_classes = [permissions.IsAuthenticated]
@@ -52,4 +52,3 @@ class ApplicationUpdateStatusView(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=400)
-    
