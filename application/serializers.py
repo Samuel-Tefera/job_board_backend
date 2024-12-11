@@ -5,7 +5,7 @@ from rest_framework import serializers
 from core.models import Application
 
 
-class ApplicationSerilalizers(serializers.ModelSerializer):
+class ApplicationSerializers(serializers.ModelSerializer):
     """Application Serilalizer"""
     class Meta:
         model = Application
