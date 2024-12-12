@@ -33,4 +33,5 @@ class JobDetailSerializer(serializers.ModelSerializer):
     """Serializer for Job detail."""
 
     class Meta:
-        fields = JobSerializers.Meta.fields + ['status', 'poster_id', 'updated_at']
+        model=Job
+        fields = JobSerializers.Meta.fields + ['status', 'poster_id', 'update_at']
