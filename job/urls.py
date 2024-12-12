@@ -7,7 +7,7 @@ from rest_framework.routers import DefaultRouter
 from . import views
 
 router = DefaultRouter()
-router.register('job', views.JobAPIViewSets)
+router.register('jobs', views.JobAPIViewSets)
 
 app_name = 'job'
 
