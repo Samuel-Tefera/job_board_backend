@@ -114,9 +114,9 @@ class Job(models.Model):
 
 
 class ApplicationStatus(models.TextChoices):
-    pending = 'pnd', 'Pending'
-    accepted = 'acp', 'Accepted'
-    rejected = 'rej', 'Rejected'
+    pending = 'PND', 'Pending'
+    accepted = 'ACP', 'Accepted'
+    rejected = 'REJ', 'Rejected'
 
 
 class Application(models.Model):
