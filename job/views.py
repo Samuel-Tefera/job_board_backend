@@ -30,7 +30,7 @@ class JobAPIViewSets(ModelViewSet):
                 queryset = queryset.filter(job_category=job_category_id)
 
         if type:
-            queryset = queryset.filter(type=type)
+            queryset = queryset.filter(type=type.upper())
 
         return queryset
 
