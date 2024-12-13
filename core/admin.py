@@ -11,7 +11,7 @@ from .models import (
 
 
 class UserAdmin(admin.ModelAdmin):
-    list_display = ['first_name', 'last_name', 'email']
+    list_display = ['id', 'first_name', 'last_name', 'email']
     list_filter = ['user_type', 'gender']
 
 
@@ -20,7 +20,7 @@ class JobCategoryAdmin(admin.ModelAdmin):
 
 
 class JobAdmin(admin.ModelAdmin):
-    list_display = ['title', 'description']
+    list_display = ['id', 'title', 'description', 'poster_id']
     list_filter = ['status', 'type', 'job_category']
 
 
