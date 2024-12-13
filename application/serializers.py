@@ -17,7 +17,7 @@ class UpdateApplicationStatus(serializers.ModelSerializer):
     """Serielizer to update status of application"""
     class Meta:
         model = Application
-        fields = ['status']
+        fields = ApplicationSerializers.Meta.fields
         extra_kwargs = {
-            'status' : {'required' : True, 'choice' : ['acp', 'rej']}
+            'status' : {'required' : True, 'choices' : ['ACP', 'REJ']}
         }
