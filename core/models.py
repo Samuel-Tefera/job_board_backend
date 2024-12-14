@@ -109,14 +109,14 @@ class Job(models.Model):
         default=JobStatus.OPEN
     )
     created_at = models.DateField(auto_now_add=True)
-    update_at = models.DateField(null=True)
+    updated_at = models.DateField(null=True)
     poster_id = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
 class ApplicationStatus(models.TextChoices):
-    pending = 'pnd', 'Pending'
-    accepted = 'acp', 'Accepted'
-    rejected = 'rej', 'Rejected'
+    pending = 'PND', 'Pending'
+    accepted = 'ACP', 'Accepted'
+    rejected = 'REJ', 'Rejected'
 
 
 class Application(models.Model):
@@ -129,7 +129,7 @@ class Application(models.Model):
         max_length=3
     )
     created_at = models.DateField(auto_now_add=True)
-    updated_at = models.DateField(auto_now_add=True)
+    updated_at = models.DateField(null=True)
 
     def __str__(self):
         return f'Application by {self.applicant} for {self.job}'
@@ -138,4 +138,3 @@ class Application(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['job', 'applicant'], name='unique_application_per_job')
         ]
-        
