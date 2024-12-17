@@ -3,6 +3,7 @@
 from rest_framework import serializers
 
 from core.models import Job
+from application.serializers import ApplicationSerializers
 
 
 class JobSerializers(serializers.ModelSerializer):
@@ -35,3 +36,12 @@ class JobDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model=Job
         fields = JobSerializers.Meta.fields + ['status', 'poster_id', 'updated_at']
+
+
+class JobFinderJobsSerializer(serializers.ModelSerializer):
+    """Serializer for my jobs view of job finder"""
+    applications = ApplicationSerializers(many=True)
+
+    class Meta:
+        model = Job
+        fields = JobSerializers.Meta.fields + ['applications']
