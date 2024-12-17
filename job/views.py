@@ -4,10 +4,10 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework import authentication, permissions, generics
 from rest_framework.response import Response
 
-from django.db.models import Count
+from django.db.models import Count, Prefetch
 
 from core.models import Job, User, Application
-from job.serializers import JobSerializers, JobDetailSerializer
+from job.serializers import JobSerializers, JobDetailSerializer, JobFinderJobsSerializer
 from application.serializers import ApplicationSerializers
 
 class JobAPIViewSets(ModelViewSet):
@@ -80,3 +80,24 @@ class JopPosterMyJobsView(generics.ListAPIView):
                 })
 
         return Response(data)
+
+
+class JobFinderMyJobsView(generics.ListAPIView):
+    """
+    API view for job finder to view jobs they applied for
+    along with thier application status
+    """
+    serializer_class = JobFinderJobsSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.TokenAuthentication]
+
+    def get_queryset(self):
+        user = self.request.user
+        user_application = Application.objects.filter(applicant=user).select_related('job')
+        queryset = Job.objects.filter(
+            applications__applicant=user
+        ).prefetch_related(
+            Prefetch('applications', queryset=user_application, to_attr='prefetched_applications')
+        )
+
+        return queryset
