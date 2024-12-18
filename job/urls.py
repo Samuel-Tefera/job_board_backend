@@ -12,5 +12,7 @@ router.register('jobs', views.JobAPIViewSets)
 app_name = 'job'
 
 urlpatterns = [
-    path('', include(router.urls))
+    path('', include(router.urls)),
+    path('my-jobs/posted/', view=views.JopPosterMyJobsView.as_view(), name='poster-jobs'),
+    path('my-jobs/applied/', view=views.JobFinderMyJobsView.as_view(), name='finder-jobs'),
 ]

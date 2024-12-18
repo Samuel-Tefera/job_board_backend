@@ -121,7 +121,7 @@ class ApplicationStatus(models.TextChoices):
 
 class Application(models.Model):
     """Model to record job applications"""
-    job = models.ForeignKey(Job, on_delete=models.CASCADE)
+    job = models.ForeignKey(Job, related_name='applications', on_delete=models.CASCADE)
     applicant = models.ForeignKey(User, on_delete=models.CASCADE)
     status = models.CharField(
         choices=ApplicationStatus.choices,

@@ -1,12 +1,14 @@
 """API views for Job model."""
 
 from rest_framework.viewsets import ModelViewSet
-from rest_framework import authentication, permissions
+from rest_framework import authentication, permissions, generics
 from rest_framework.response import Response
 
-from core.models import Job, User
-from job.serializers import JobSerializers, JobDetailSerializer
+from django.db.models import Count, Q
 
+from core.models import Job, User, Application
+from job.serializers import JobSerializers, JobDetailSerializer, JobFinderJobsSerializer
+from application.serializers import ApplicationSerializers
 
 class JobAPIViewSets(ModelViewSet):
     """API view for CRUD on Job."""
@@ -18,6 +20,11 @@ class JobAPIViewSets(ModelViewSet):
     def get_queryset(self):
         queryset = self.queryset.filter(status='OP')
 
+        # Search for a specific job
+        search_query = self.request.query_params.get('search')
+        if search_query:
+            queryset = queryset.filter(Q(title__icontains=search_query))
+            
         # Filter by job type (Full / Part time, Contractual)
         type = self.request.query_params.get('type')
 
@@ -49,3 +56,53 @@ class JobAPIViewSets(ModelViewSet):
         if self.action == 'list':
             return JobSerializers
         return self.serializer_class
+
+
+class JopPosterMyJobsView(generics.ListAPIView):
+    """API view for job posters to view their jobs with applicants and counts"""
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.TokenAuthentication]
+
+    def get_queryset(self):
+        return Job.objects.filter(poster_id=self.request.user).annotate(applicant_count=Count('applications'))
+
+    def list(self, request, *args, **kwargs):
+        #Get the job
+        jobs = self.get_queryset()
+
+        data = []
+        for job in jobs:
+            applicants = Application.objects.filter(job=job).select_related('applicant')
+            applicants_data = ApplicationSerializers(applicants, many=True).data
+
+            data.append({
+                    'job_id':job.id,
+                    'title' :job.title,
+                    'description':job.description,
+                    'created_at' : job.created_at,
+                    'total_applicants' : job.applicant_count,
+                    'applicants' : applicants_data
+                })
+
+        return Response(data)
+
+
+class JobFinderMyJobsView(generics.ListAPIView):
+    """
+    API view for job finder to view jobs they applied for
+    along with thier application status
+    """
+    serializer_class = JobFinderJobsSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.TokenAuthentication]
+
+    def get_queryset(self):
+        user = self.request.user
+        user_application = Application.objects.filter(applicant=user).select_related('job')
+        queryset = Job.objects.filter(
+            applications__applicant=user
+        ).prefetch_related(
+            Prefetch('applications', queryset=user_application, to_attr='prefetched_applications')
+        )
+
+        return queryset
