@@ -1,5 +1,7 @@
 """Views for User API."""
 
+from django.utils.timezone import now
+
 from rest_framework import (
     generics,
     permissions,
@@ -7,6 +9,9 @@ from rest_framework import (
 )
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.settings import api_settings
+from rest_framework.authtoken.models import Token
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from user.serializers import (
     UserSerializers,
@@ -19,10 +24,36 @@ class CreateUserView(generics.CreateAPIView):
     serializer_class = UserSerializers
 
 
-class CreateTokenView(ObtainAuthToken):
+class UserLoginView(ObtainAuthToken):
     """Create a new auth token for validate user."""
     serializer_class = AuthTokenSerializer
     renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES
+
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+        token = Token.objects.get(key=response.data['token'])
+        user = token.user
+
+        user.last_login = now()
+        user.save()
+
+        return Response({
+            'token' : token.key,
+            'user_id' : user.pk,
+            'email' : user.email,
+        })
+
+
+class UserLogoutView(APIView):
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        try:
+            request.user.auth_token.delete()
+            return Response({'message' : 'Successfully logged out'}, status=200)
+        except Exception as e:
+            return Response({'error': str(e)}, status=400)
 
 
 class ManageUserView(generics.RetrieveUpdateAPIView):
