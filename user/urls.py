@@ -8,6 +8,7 @@ app_name = 'user'
 
 urlpatterns = [
      path('create/', views.CreateUserView.as_view(), name='create'),
-     path('token/', views.CreateTokenView.as_view(), name='token'),
+     path('login/', views.UserLoginView.as_view(), name='get_token'),
+     path('logout/', views.UserLogoutView.as_view(), name='delete_token'),
      path('me/', views.ManageUserView.as_view(), name='me')
 ]
