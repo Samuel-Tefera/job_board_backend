@@ -4,7 +4,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework import authentication, permissions, generics
 from rest_framework.response import Response
 
-from django.db.models import Count, Prefetch
+from django.db.models import Count, Q
 
 from core.models import Job, User, Application
 from job.serializers import JobSerializers, JobDetailSerializer, JobFinderJobsSerializer
@@ -20,6 +20,11 @@ class JobAPIViewSets(ModelViewSet):
     def get_queryset(self):
         queryset = self.queryset.filter(status='OP')
 
+        # Search for a specific job
+        search_query = self.request.query_params.get('search')
+        if search_query:
+            queryset = queryset.filter(Q(title__icontains=search_query))
+            
         # Filter by job type (Full / Part time, Contractual)
         type = self.request.query_params.get('type')
 
