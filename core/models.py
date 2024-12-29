@@ -112,6 +112,9 @@ class Job(models.Model):
     updated_at = models.DateField(null=True)
     poster_id = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.title
+
 
 class ApplicationStatus(models.TextChoices):
     pending = 'PND', 'Pending'
