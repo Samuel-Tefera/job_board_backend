@@ -2,12 +2,21 @@
 
 from rest_framework import serializers
 
-from core.models import Job
+from core.models import Job, JobCategory
 from application.serializers import ApplicationSerializers
+
+
+class JobcategorySerializer(serializers.ModelSerializer):
+    """Serializer for Job Category model."""
+    class Meta:
+        model = JobCategory
+        fields = ['id', 'category_name']
 
 
 class JobSerializers(serializers.ModelSerializer):
     """Serializers for Job model."""
+    job_category = serializers.CharField(source='job_category.category_name', read_only=True)
+
     class Meta:
         model = Job
         fields = [
