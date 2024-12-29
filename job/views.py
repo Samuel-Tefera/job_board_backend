@@ -18,13 +18,13 @@ class JobAPIViewSets(ModelViewSet):
     authentication_classes = [authentication.TokenAuthentication]
 
     def get_queryset(self):
-        queryset = self.queryset.filter(status='OP')
+        queryset = self.queryset.filter(status='OP').order_by('-created_at')
 
         # Search for a specific job
         search_query = self.request.query_params.get('search')
         if search_query:
             queryset = queryset.filter(Q(title__icontains=search_query))
-            
+
         # Filter by job type (Full / Part time, Contractual)
         type = self.request.query_params.get('type')
 
@@ -64,7 +64,7 @@ class JopPosterMyJobsView(generics.ListAPIView):
     authentication_classes = [authentication.TokenAuthentication]
 
     def get_queryset(self):
-        return Job.objects.filter(poster_id=self.request.user).annotate(applicant_count=Count('applications'))
+        return Job.objects.filter(poster_id=self.request.user).annotate(applicant_count=Count('applications')).order_by('-created_at')
 
     def list(self, request, *args, **kwargs):
         #Get the job
@@ -103,6 +103,6 @@ class JobFinderMyJobsView(generics.ListAPIView):
             applications__applicant=user
         ).prefetch_related(
             Prefetch('applications', queryset=user_application, to_attr='prefetched_applications')
-        )
+        ).order_by('-created_at')
 
         return queryset
