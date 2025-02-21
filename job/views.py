@@ -4,7 +4,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework import authentication, permissions, generics
 from rest_framework.response import Response
 
-from django.db.models import Count, Q
+from django.db.models import Count, Q, Prefetch
 
 from core.models import Job, User, Application
 from job.serializers import JobSerializers, JobDetailSerializer, JobFinderJobsSerializer
