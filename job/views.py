@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from django.db.models import Count, Q, Prefetch
 
 from core.models import Job, User, Application
-from job.serializers import JobSerializers, JobDetailSerializer, JobFinderJobsSerializer
+from job.serializers import JobSerializer, JobDetailSerializer, JobFinderJobsSerializer
 from application.serializers import ApplicationSerializers
 
 class JobAPIViewSets(ModelViewSet):
@@ -54,11 +54,11 @@ class JobAPIViewSets(ModelViewSet):
 
     def get_serializer_class(self):
         if self.action == 'list':
-            return JobSerializers
+            return JobSerializer
         return self.serializer_class
 
 
-class JopPosterMyJobsView(generics.ListAPIView):
+class JobPosterMyJobsView(generics.ListAPIView):
     """API view for job posters to view their jobs with applicants and counts"""
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [authentication.TokenAuthentication]
@@ -72,17 +72,14 @@ class JopPosterMyJobsView(generics.ListAPIView):
 
         data = []
         for job in jobs:
+            job_data = JobDetailSerializer(job).data
             applicants = Application.objects.filter(job=job).select_related('applicant')
             applicants_data = ApplicationSerializers(applicants, many=True).data
 
-            data.append({
-                    'job_id':job.id,
-                    'title' :job.title,
-                    'description':job.description,
-                    'created_at' : job.created_at,
-                    'total_applicants' : job.applicant_count,
-                    'applicants' : applicants_data
-                })
+            job_data['total_applicants'] = job.applicant_count
+            job_data['applicants'] = applicants_data
+
+            data.append(job_data)
 
         return Response(data)
 
