@@ -50,6 +50,7 @@ class JobDetailSerializer(serializers.ModelSerializer):
 
 class JobFinderJobsSerializer(serializers.ModelSerializer):
     """Serializer for my jobs view of job finder"""
+    job_category = serializers.CharField(source='job_category.category_name', read_only=True)
     applications = ApplicationSerializers(many=True)
 
     class Meta:
