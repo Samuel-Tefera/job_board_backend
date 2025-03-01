@@ -13,7 +13,7 @@ class JobcategorySerializer(serializers.ModelSerializer):
         fields = ['id', 'category_name']
 
 
-class JobSerializers(serializers.ModelSerializer):
+class JobSerializer(serializers.ModelSerializer):
     """Serializers for Job model."""
     job_category = serializers.CharField(source='job_category.category_name', read_only=True)
 
@@ -41,16 +41,18 @@ class JobSerializers(serializers.ModelSerializer):
 
 class JobDetailSerializer(serializers.ModelSerializer):
     """Serializer for Job detail."""
+    job_category = serializers.CharField(source='job_category.category_name', read_only=True)
 
     class Meta:
         model=Job
-        fields = JobSerializers.Meta.fields + ['status', 'poster_id', 'updated_at']
+        fields = JobSerializer.Meta.fields + ['status', 'poster_id', 'updated_at']
 
 
 class JobFinderJobsSerializer(serializers.ModelSerializer):
     """Serializer for my jobs view of job finder"""
+    job_category = serializers.CharField(source='job_category.category_name', read_only=True)
     applications = ApplicationSerializers(many=True)
 
     class Meta:
         model = Job
-        fields = JobSerializers.Meta.fields + ['applications']
+        fields = JobSerializer.Meta.fields + ['applications']

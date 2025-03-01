@@ -1,6 +1,7 @@
 """Views for User API."""
 
 from django.utils.timezone import now
+from django.contrib.auth import get_user_model
 
 from rest_framework import (
     generics,
@@ -41,6 +42,7 @@ class UserLoginView(ObtainAuthToken):
             'token' : token.key,
             'user_id' : user.pk,
             'email' : user.email,
+            'user_type' : user.user_type,
         })
 
 
@@ -64,3 +66,12 @@ class ManageUserView(generics.RetrieveUpdateAPIView):
 
     def get_object(self):
         return self.request.user
+
+
+class UserDetailView(generics.RetrieveAPIView):
+    """API view to retrieve a user's information by their ID."""
+    queryset = get_user_model().objects.all()
+    serializer_class = UserSerializers
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.TokenAuthentication]
+    lookup_field = 'id'
